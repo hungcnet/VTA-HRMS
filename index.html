@@ -32,8 +32,9 @@ window.APP_API_URL='https://script.google.com/macros/s/AKfycbyid-1ejwzsnZJDqA_H9
   <div v-if="manQr.bat" class="man-qr">
     <div class="man-qr-trong">
       <span class="man-qr-nhan">Chấm công tại</span>
+      <h1>{{manQr.tenNoi||'…'}}</h1>
       <div ref="manQrHinh" class="man-qr-hinh" v-show="!manQr.loi"></div>
-      <p v-if="manQr.loi" class="man-qr-loi"></p>
+      <p v-if="manQr.loi" class="man-qr-loi">{{manQr.loi}}</p>
       <p v-else class="man-qr-nhac">Mở ứng dụng VTA-HRMS, bấm <b>Quét mã QR</b> rồi chụp lại mã này.<template v-if="!manQr.coDinh"><br>Mã tự đổi sau <b>{{manQr.conLai}}</b> giây.</template></p>
     </div>
   </div>
