@@ -383,10 +383,9 @@ window.APP_API_URL='https://script.google.com/macros/s/AKfycbyid-1ejwzsnZJDqA_H9
       <button type="button" class="btn secondary nho" @click="danTuBangTinh">Dán từ bảng tính</button>
     </div>
 
-    <p class="luoi-ghi-ky"><icon name="info"></icon><span>3 cột thu nhập thêm chỉ ghi cho kỳ lương <b>{{period}}</b>. Sang kỳ khác các ô trống lại, tên cột và ô tick thuế vẫn giữ. Lưu xong nhớ bấm Tính lương lại.</span></p>
     <div class="modal-body luoi-than">
       <table class="luoi-luong"><thead><tr>
-        <th class="cot-ten">Nhân viên</th><th>Lương cơ bản</th><th>Lương đóng BH</th><th>Phụ cấp</th><th>Người phụ thuộc</th><th class="cot-them" v-for="(k,i) in luoiLuong.cot" :key="'cot'+i"><input type="text" v-model="k.ten" maxlength="80" :placeholder="'Khoản thu nhập '+(i+1)" :aria-label="'Tên cột thu nhập '+(i+1)" @input="luoiLuong.cotSua=true"><label><input type="checkbox" v-model="k.chiu_thue" @change="luoiLuong.cotSua=true">Tính thuế</label></th><th>Hiện tại</th>
+        <th class="cot-ten">Nhân viên</th><th>Lương cơ bản</th><th>Lương đóng BH</th><th>Phụ cấp</th><th>Người phụ thuộc</th><th>Hiện tại</th>
       </tr></thead><tbody>
         <tr v-for="(r,vt) in luoiHienThi" :key="r.emp_id" :class="{daSua:r.daSua,thieu:!r.base_salary}">
           <td class="cot-ten"><strong>{{r.full_name}}</strong><small>{{r.emp_id}}{{r.dept_name?' · '+r.dept_name:''}}</small></td>
@@ -394,23 +393,23 @@ window.APP_API_URL='https://script.google.com/macros/s/AKfycbyid-1ejwzsnZJDqA_H9
           <td><input v-model.number="r.insurance_salary" type="number" min="0" step="1" inputmode="numeric" :data-o="vt+':1'" @input="r.daSua=true" @keydown="phimLuoi($event,vt,1)" :placeholder="r.base_salary||''"></td>
           <td><input v-model.number="r.phu_cap" type="number" min="0" step="1" inputmode="numeric" :data-o="vt+':2'" @input="r.daSua=true" @keydown="phimLuoi($event,vt,2)"></td>
           <td><input v-model.number="r.dependents" type="number" min="0" max="20" step="1" :data-o="vt+':3'" @input="r.daSua=true" @keydown="phimLuoi($event,vt,3)"></td>
-          <td v-for="n in 3" :key="'ex'+n"><input v-model.number="r['ex'+n]" type="number" min="0" step="1" inputmode="numeric" :data-o="vt+':'+(n+3)" :aria-label="(luoiLuong.cot[n-1].ten||'Khoản thu nhập '+n)+' của '+r.full_name" @input="r.daSuaEx=true" @keydown="phimLuoi($event,vt,n+3)"></td><td class="cot-cu">{{r.cu?money(r.cu.base_salary)+' · '+formatDate(r.cu.effective_from):'chưa có'}}</td>
+          <td class="cot-cu">{{r.cu?money(r.cu.base_salary)+' · '+formatDate(r.cu.effective_from):'chưa có'}}</td>
         </tr>
-        <tr v-if="!luoiHienThi.length"><td colspan="9"><p class="empty-state">Không có dòng nào khớp bộ lọc.</p></td></tr>
+        <tr v-if="!luoiHienThi.length"><td colspan="6"><p class="empty-state">Không có dòng nào khớp bộ lọc.</p></td></tr>
       </tbody></table>
     </div>
 
     <div class="modal-footer luoi-chan">
       <span class="luoi-tom-tat"><b>{{soDongDaSua}}</b> dòng đã sửa · {{salaryConfigs.thieu||0}} người chưa có lương</span>
       <button type="button" class="btn secondary" @click="napLuoiLuong">Bỏ thay đổi</button>
-      <button type="button" class="btn primary" @click="luuLuoiLuong" :disabled="saving||(!soDongDaSua&&!luoiLuong.cotSua)"><icon name="check"></icon>Lưu {{soDongDaSua}} dòng</button>
+      <button type="button" class="btn primary" @click="luuLuoiLuong" :disabled="saving||!soDongDaSua"><icon name="check"></icon>Lưu {{soDongDaSua}} dòng</button>
     </div>
   </dialog>
 
   <dialog ref="danLuongDialog" class="modal"><div class="modal-head"><div><h2>Dán từ bảng tính</h2><p class="muted">Copy trong Excel hoặc Google Sheets rồi dán vào ô dưới. Mỗi dòng một người.</p></div>
       <button class="icon-btn" @click="closeDialog('danLuongDialog')" aria-label="Đóng"><icon name="x"></icon></button></div>
     <div class="modal-body">
-      <p class="field-hint">Thứ tự cột: <b>mã hoặc tên nhân viên</b>, lương cơ bản, lương đóng bảo hiểm, phụ cấp, số người phụ thuộc, rồi ba cột thu nhập thêm. Các cột sau tên bỏ trống được. Ngăn cách bằng tab (dán thẳng từ bảng tính) hoặc dấu phẩy.</p>
+      <p class="field-hint">Thứ tự cột: <b>mã hoặc tên nhân viên</b>, lương cơ bản, lương đóng bảo hiểm, phụ cấp, số người phụ thuộc. Bốn cột sau bỏ trống được. Ngăn cách bằng tab (dán thẳng từ bảng tính) hoặc dấu phẩy.</p>
       <textarea v-model="danLuong.chu" rows="9" placeholder="NV0012	26000000	20000000	730000	1&#10;Trần Thị Thu Hà	30000000"></textarea>
       <p v-if="danLuong.ketQua" class="dan-ket-qua">{{danLuong.ketQua}}</p>
       <ul v-if="danLuong.khongKhop.length" class="dan-loi"><li v-for="(t,i) in danLuong.khongKhop.slice(0,10)" :key="i">Không tìm ra ai khớp: <b>{{t}}</b></li>
