@@ -33,6 +33,11 @@ html[data-theme=dark] ::selection{background:#2f78f0;color:#fff}
 html[data-theme=dark] .leaflet-tile-pane{filter:invert(1) hue-rotate(180deg) brightness(.92) contrast(.88)}
 html[data-theme=dark] .leaflet-container{background:#0d1220}
 html[data-theme=dark] .brand-mark,html[data-theme=dark] .brand img{filter:drop-shadow(0 0 1px rgba(255,255,255,.35))}
+
+/* VTA-HRMS: vùng nội dung co giãn theo độ phân giải màn hình (bỏ giới hạn rộng cố định, không còn hai dải trống hai bên) */
+@media (min-width:761px){
+  .workspace{max-width:none;width:100%;min-width:0;margin-left:0;margin-right:0;padding-left:clamp(20px,2.2vw,56px);padding-right:clamp(20px,2.2vw,56px)}
+}
 </style>
 
 </head>
